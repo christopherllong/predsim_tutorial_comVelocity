@@ -78,7 +78,7 @@ In this part, we will generate the predictive simulations. We use direct colloca
 3. **Change the COM Velocity Cost Term Weight -> 1000000.** In `settings.py`, create a new case '3' and change the COM velocity weight (this is already done). Now run `main_comVelocity.py` after making sure you will be running case '3'. 
 
 
-# Visualize simulations in OpenSim
+## Visualize simulations in OpenSim
 1. Launch OpenSim GUI
 2. Open model, eg `OpenSimModel/Hamner_modified/Model/Hamner_modified_amp_scaled.osim`
 3. Load motion, eg `Results/Case_0/motion.mot`

@@ -43,11 +43,18 @@ To leverage the benefits of algorithmic differentiation, we use [CasADi external
 
 4. Run `main.py` (the one from the [OpenSimAD](https://github.com/christopherllong/opensimAD_comVelocity) repository). You should see some new files in /Documents/predsim_tutorial_amputee/OpenSimModel/Hamner_modified_amp/Model. Among them, the following three files: `Hamner_modified_amp_scaled.cpp`, `Hamner_modified_amp_scaled.npy`, and `Hamner_modified_amp_scaled.dll` (Windows) or `Hamner_modified_amp_scaled.so` (Linux) or `Hamner_modified_amp_scaled.dylib` (macOS). The .cpp file contains the source code of the external function, the .dll/.so/.dylib file is the dynamically linked library that can be called when formulating your trajectory optimization problem, the .npy file is a dictionary that describes the outputs of the external function (names and indices).
 
-5. Modify the .cpp file to add a passive torque actuator at the ankle joint to model a passive prosthesis.
+## Part 2: Add additional passive torque to the model
+There are two ways to add passive torque at the prosthetic ankle:
 
-6. Recompile the dynamically linked library (.dll file).
+Method 1 (traditional): Modify the external function C++ file
+You can manually edit the generated .cpp file (e.g., Hamner_modified_amp_scaled.cpp) to insert a passive torque term, then recompile it to produce a new .dll file.
+This method works, but requires regenerating the external function every time the passive torque model is changed, and is therefore less convenient.
 
-## Part 2: Generate simulations
+Method 2 (recommended): Modify the dynamics directly in main_comVelocity.py
+A simpler and more robust approach is to add the passive ankle torque directly inside the inverse-dynamics residuals in main_comVelocity.py.
+This updates the dynamics used by the optimizer without regenerating external functions, making it easier to adjust stiffness and ensuring consistent behavior.
+
+## Part 3: Generate simulations
 In this part, we will generate the predictive simulations. We use direct collocation methods for formulating the underlying optimal control problem (you can find more details about these methods in the publications below). In the first example, we simulate a transtibial amputee walking using the original multi-objective cost function used by [Falisse et al. 2019](https://royalsocietypublishing.org/rsif/article/16/157/20190402/87166/Rapid-predictive-simulations-with-complex). In the last three examples, we introduce a new [cost term](https://github.com/christopherllong/predsim_tutorial_amputee/blob/e980ec02a76625c7ba5b5b4d335ba7086f5ddbf9/main_comVelocity.py#L1062) to minimize the squared mediolateral center-of-mass velocity. For all examples, we simulate for half a gait cycle, impose left-right symmetricity, and reconstruct a full gait cycle post-optimization. Let's first generate the simulations with the amputee model for which we generated the external function in part 1 (if you skipped part 1, no worries the required files were pre-generated).
 
 1. **Set settings.** In `settings.py`, we will set some settings for the simulations (this is already done). We will run the case '0' to start with ([key '0' in the settings dictionary](https://github.com/christopherllong/predsim_tutorial_amputee/blob/main/settings.py#L5)). We want to use the model 'Hamner_modified_amp' (which is the one for which we generated the external function in part 1). Other settings are the target speed, let's set it to 1.33m/s, and the number of mesh intervals, let's use 25 mesh intervals. FYI since we use a third-order collocation scheme, the dynamic equations are enforced at three collocation points within each interval. With 25 mesh intervals, this means we have 75 collocation points. Assuming half a gait cycle is about 0.55s, we therefore enforce the dynamic constraints about every 7ms.
@@ -75,7 +82,7 @@ In this part, we will generate the predictive simulations. We use direct colloca
 3. Load motion, eg `Results/Case_0/motion.mot`
 4. Associate Motion Data, eg `Results/Case_0/GRF.mot`
 
-## Part 3: Compare simulated joint kinematics to experimental data
+## Part 4: Compare simulated joint kinematics to experimental data
 
 # Warning
 We made some assumptions for the examples of this tutorial. Make sure you verify what you are doing if you end up using this code beyond the provided examples. Also, please remember that generating walking simulations involves solving large optimization problems. It is highly possible that your problems converge to local minima. You should always do some sensitivity analyses to make sure that your solutions make sense (eg, does your solution change if you increase the number of mesh intervals or use a different initial guess).

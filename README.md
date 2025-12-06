@@ -85,14 +85,14 @@ In this part, we will generate the predictive simulations. We use direct colloca
 4. Associate Motion Data, eg `Results/Case_0/GRF.mot`
 
 ## Part 4: Compare simulated joint kinematics to experimental data
-# To visualize the simulated joint kinematics in OpenSim:
+## To visualize the simulated joint kinematics in OpenSim:
 1.	Launch OpenSim GUI, go to Tools → Plot.
 2.	In the bottom-left panel, click y-quantity and load the generated `motion.mot` file.
 3.	Select the variables you want to inspect (e.g., `hip_flexion_r`, `knee_angle_r`, `ankle_angle_r`) and click OK.
 4.	Then click x-quantity, choose time, and click OK.
 5.	Press Add (bottom-right) to display the curves.
 
-# To visualize the COM velocity in OpenSim
+## To visualize the COM velocity in OpenSim
 To examine the simulated center-of-mass (COM) velocity, you must first run a BodyKinematics analysis:
 1.	Go to Tools → Analyze.
 2.	In the Input tab, under Motion, choose From file, click the folder icon, and load the `motion.mot` file.

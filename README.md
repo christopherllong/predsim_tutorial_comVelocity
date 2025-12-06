@@ -47,10 +47,12 @@ To leverage the benefits of algorithmic differentiation, we use [CasADi external
 There are two ways to add passive torque at the prosthetic ankle:
 
 Method 1 (traditional): Modify the external function C++ file
+
 You can manually edit the generated .cpp file (e.g., `Hamner_modified_amp_scaled.cpp`) to insert a passive torque term, then recompile it to produce a new .dll file.
 This method works, but requires regenerating the external function every time the passive torque model is changed, and is therefore less convenient.
 
 Method 2 (recommended): Modify the dynamics directly in `main_comVelocity.py`
+
 A simpler and more robust approach is to add the passive ankle torque directly inside the inverse-dynamics residuals in `main_comVelocity.py`.
 This updates the dynamics used by the optimizer without regenerating external functions, making it easier to adjust stiffness and ensuring consistent behavior.
 
